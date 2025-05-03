@@ -6,6 +6,7 @@ import java.util.Scanner;
 @Slf4j
 public class EmailClient {
     public static void main(String[] args) {
+        // TEST Code
         Scanner sc = new Scanner(System.in);
 
         TCPNetworkLayer network = new TCPNetworkLayer(EmailUtilities.HOSTNAME, EmailUtilities.PORT);
