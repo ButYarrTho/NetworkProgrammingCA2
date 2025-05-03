@@ -5,7 +5,7 @@ public class EmailUtilities {
 
     public static final String DELIMITER      = "%%";
     public static final String LIST_DELIMITER = ",";
-    public static final String TIMESTAMP = "yyyy-MM-dd HH:mm";
+    public static final String TIMESTAMP      = "yyyy-MM-dd HH:mm";
 
     public static final String LOGIN           = "LOGIN";
     public static final String REGISTER        = "REGISTER";
