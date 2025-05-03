@@ -13,7 +13,7 @@
         <module>model</module>
         <module>network</module>
         <module>server</module>
-        <module>utils</module>
+        <module>common</module>
     </modules>
 
     <properties>
