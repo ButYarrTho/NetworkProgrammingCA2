@@ -9,6 +9,7 @@
         <module name="client" />
         <module name="server" />
         <module name="model" />
+        <module name="util" />
         <module name="network" />
       </profile>
     </annotationProcessing>
