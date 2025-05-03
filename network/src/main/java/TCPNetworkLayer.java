@@ -35,6 +35,7 @@ public class TCPNetworkLayer {
 
     public void send(String message) {
         outputStream.println(message);
+        outputStream.flush();
     }
 
     public String receive() {
