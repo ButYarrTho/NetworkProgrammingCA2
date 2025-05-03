@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="client" />
         <module name="model" />
+        <module name="network" />
       </profile>
     </annotationProcessing>
   </component>
