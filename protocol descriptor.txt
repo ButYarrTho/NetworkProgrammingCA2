@@ -1,0 +1,147 @@
+Email System Protocol Descriptor
+
+---
+
+Service Location
+- Host: localhost
+- Port: 15000
+
+---
+
+Transmission Encoding
+- TCP
+
+---
+
+Data Encoding
+- Text
+
+---
+
+Message Format
+
+---
+
+Authentication
+
+Login:
+- Request: LOGIN__$username__$password
+- Response:
+  - LOGIN_SUCCESS
+  - INVALID_CREDENTIALS
+  - ALREADY_LOGGED_IN
+
+Register:
+- Request: REGISTER__$username__$password
+- Response:
+  - REGISTER_SUCCESS
+  - USER_ALREADY_EXISTS
+  - INVAID_PASSWORD
+
+---
+
+Send Email:
+- Request: SEND__$recipient[,$recipient]*__$subject__$body
+- Response:
+  - EMAIL_SENT
+  - USER_NOT_FOUND__$recipient[,$recipient]*
+  - UNAUTHENTICATED
+
+---
+
+List Received Emails:
+- Request: LIST_RECEIVED
+- Response:
+  - RECEIVED__[$id::$sender::$subject::$timestamp]*
+  - NO_EMAILS
+  - UNAUTHENTICATED
+
+List Sent Emails:
+- Request: LIST_SENT
+- Response:
+  - SENT__[$id::$recipient[,$recipient]*::$subject::$timestamp]*
+  - NO_EMAILS
+  - UNAUTHENTICATED
+
+---
+
+Search Received Emails:
+- Request: SEARCH_RECEIVED__$keyword
+- Response:
+  - RECEIVED__[$id::$sender::$subject::$timestamp]*
+  - NO_EMAILS
+  - UNAUTHENTICATED
+
+Search Sent Emails:
+- Request: SEARCH_SENT__$keyword
+- Response:
+  - RECEIVED__[$id::$sender::$subject::$timestamp]*
+  - NO_EMAILS
+  - UNAUTHENTICATED
+
+---
+
+Retrieve Email Content:
+- Request: READ__$id
+- Response:
+  - EMAIL_CONTENT__$subject::$body
+  - EMAIL_NOT_FOUND
+  - UNAUTHENTICATED
+
+Delete Email:
+- Request: DELETE__$id
+- Response:
+  - EMAIL_DELETED
+  - EMAIL_NOT_FOUND
+  - UNAUTHENTICATED
+
+---
+
+Logout:
+- Request: LOGOUT
+- Response:
+  - LOGOUT_SUCCESS
+
+Exit:
+- Request: EXIT
+- Response: BYE
+
+---
+
+Push Notifications:
+- Server-side message: NEW_EMAIL__$sender::$subject::$timestamp
+  - Sent asynchronously when user is online.
+
+---
+
+Invalid Requests:
+- Any malformed request or unknown command:
+  - INVALID_REQUEST
+
+---
+
+Sample Exchanges
+
+Login:
+Request: LOGIN__alice__pass123
+Response: LOGIN_SUCCESS
+
+Request: LOGIN__alice__wrongpass
+Response: INVALID_CREDENTIALS
+
+Send Email:
+Request: SEND__bob,charlie__Meeting__Don’t forget our meeting at 10.
+Response: EMAIL_SENT
+
+Request: SEND__ghost__Hello__Testing
+Response: USER_NOT_FOUND__ghost
+
+List Received:
+Request: LIST_RECEIVED
+Response: RECEIVED__1::bob::Meeting::2025-04-10 14:30__2::charlie::Dinner Plans::2025-04-10 15:00
+
+Response: NO_EMAILS
+
+Push Notification:
+Server Message: NEW_EMAIL__bob::Reminder::2025-04-10 15:45
+
