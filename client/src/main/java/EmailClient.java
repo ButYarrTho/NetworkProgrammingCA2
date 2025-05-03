@@ -1,8 +1,9 @@
-import protocols.EmailUtilities;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Scanner;
+
+import static protocols.EmailUtilities.*;
 
 @Slf4j
 public class EmailClient {
@@ -10,7 +11,7 @@ public class EmailClient {
         // TEST Code
         Scanner sc = new Scanner(System.in);
 
-        TCPNetworkLayer network = new TCPNetworkLayer(EmailUtilities.HOSTNAME, EmailUtilities.PORT);
+        TCPNetworkLayer network = new TCPNetworkLayer(HOSTNAME, PORT);
         try {
             network.connect();
         } catch (IOException e) {
