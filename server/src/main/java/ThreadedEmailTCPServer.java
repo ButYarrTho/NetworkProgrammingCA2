@@ -1,7 +1,4 @@
 import lombok.extern.slf4j.Slf4j;
-import model.Storage;
-import network.TCPNetworkLayer;
-import util.EmailUtilities;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,9 +7,9 @@ import java.util.concurrent.*;
 @Slf4j
 public class ThreadedEmailTCPServer {
     private static final int CORE_POOL = 4;
-    private static final int MAX_POOL  = 10;
+    private static final int MAX_POOL = 10;
     private static final long KEEP_ALIVE = 30L;
-    private static final int QUEUE_CAP  = 50;
+    private static final int QUEUE_CAP = 50;
 
     public static void main(String[] args) {
         boolean serverSessionValid = true;
