@@ -1,3 +1,5 @@
+package protocols;
+
 public class EmailUtilities {
 
     public static final String HOSTNAME       = "localhost";
@@ -36,6 +38,7 @@ public class EmailUtilities {
     public static final String BYE                 = "BYE";
     public static final String INVALID_REQUEST     = "INVALID_REQUEST";
     public static final String NEW_EMAIL           = "NEW_EMAIL";
+    public static final String UNAUTHENTICATED     = "UNAUTHENTICATED";
 
     private EmailUtilities() { }
 }

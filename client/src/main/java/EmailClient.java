@@ -1,3 +1,4 @@
+import protocols.EmailUtilities;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class EmailClient {
         } catch (IOException e) {
             log.error("Could not establish connection with the server");
             System.exit(1);
+            return;
         }
 
         boolean clientRunning = true;
