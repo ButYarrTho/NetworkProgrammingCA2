@@ -20,8 +20,7 @@ public class ThreadedEmailTCPServer {
         )) {
             Storage store = new Storage();
             try (ServerSocket server = new ServerSocket(EmailUtilities.PORT)) {
-//                log.info("Email server on port {}", EmailUtilities.PORT);
-                System.out.println("Email server on port " + EmailUtilities.PORT);
+                log.info("Email server on port {}", EmailUtilities.PORT);
                 while (serverSessionValid) {
                     Socket client = server.accept();
                     TCPNetworkLayer net = new TCPNetworkLayer(client);
@@ -33,7 +32,7 @@ public class ThreadedEmailTCPServer {
                 pool.shutdown();
             }
         } catch (Exception e) {
-            System.out.println("Error occurred when running server.");
+            log.error("Error occurred when running server.");
         }
     }
 }
