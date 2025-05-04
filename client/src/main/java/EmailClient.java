@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import static protocols.EmailUtilities.*;
-
+//TEST CLIENT
 @Slf4j
 public class EmailClient {
     public static void main(String[] args) {
