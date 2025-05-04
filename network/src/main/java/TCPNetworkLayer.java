@@ -41,6 +41,15 @@ public class TCPNetworkLayer {
     public String receive() {
         return scanner.nextLine();
     }
+    public void close() {
+        try {
+            if (dataSocket != null && !dataSocket.isClosed()) {
+                dataSocket.close();
+            }
+        } catch (IOException e) {
+            System.out.println("Error closing network connection.");
+        }
+    }
 
     public void disconnect() throws IOException {
         if (dataSocket != null) dataSocket.close();
