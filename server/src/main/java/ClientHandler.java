@@ -36,14 +36,11 @@ public class ClientHandler implements Runnable {
                     //case LIST_SENT -> response = handleListSent(parts);
                     //case SEARCH_RECEIVED -> response = handleSearchReceived(parts);
                     //case SEARCH_SENT -> response = handleSearchSent(parts);
-                    //case READ -> response = handleRead(parts);
-                    //case DELETE -> response = handleDelete(parts);
-                    case LOGOUT -> {
-                        loggedInUsername = null;
-                        response = LOGOUT_SUCCESS;
-                    }
+                    case READ -> response = handleRead(parts);
+                    case DELETE -> response = handleDelete(parts);
+                    case LOGOUT -> response = handleLogout(parts);  // <-- updated
                     case EXIT -> {
-                        response = BYE;
+                        response = handleExit();
                         clientSession = false;
                     }
                     default -> response = INVALID_REQUEST;
@@ -80,8 +77,6 @@ public class ClientHandler implements Runnable {
         }
     }
 
-
-
     public String handleRegister(String[] parts) {
         if (parts.length != 3) return INVALID_REQUEST;
         if (loggedInUsername != null) return ALREADY_LOGGED_IN;
@@ -96,6 +91,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
+
     private String handleSend(String[] parts) {
         if (loggedInUsername == null) return UNAUTHENTICATED;
         if (parts.length != 4) return INVALID_REQUEST;
@@ -109,7 +105,6 @@ public class ClientHandler implements Runnable {
 
         List<String> invalidRecipients = new ArrayList<>();
 
-        // Validate recipients
         for (String recipient : recipients) {
             if (!storage.userManager.userExists(recipient)) {
                 invalidRecipients.add(recipient);
@@ -124,5 +119,56 @@ public class ClientHandler implements Runnable {
 
         return EMAIL_SENT;
     }
+
+    private String handleRead(String[] parts) {
+        if (loggedInUsername == null) return UNAUTHENTICATED;
+        if (parts.length != 2) return INVALID_REQUEST;
+
+        try {
+            int emailId = Integer.parseInt(parts[1]);
+
+            model.Email email = storage.emailManager.findEmailInInbox(loggedInUsername, emailId);
+            if (email == null) {
+                return EMAIL_NOT_FOUND;
+            }
+
+            return "EMAIL_CONTENT__" + email.getSubject() + "::" + email.getBody();
+        } catch (NumberFormatException e) {
+            return INVALID_REQUEST;
+        }
+    }
+
+    private String handleDelete(String[] parts) {
+        if (loggedInUsername == null) return UNAUTHENTICATED;
+        if (parts.length != 2) return INVALID_REQUEST;
+
+        try {
+            int emailId = Integer.parseInt(parts[1]);
+
+            boolean deletedFromInbox = storage.emailManager.deleteEmailFromInbox(loggedInUsername, emailId);
+            boolean deletedFromSent = storage.emailManager.deleteEmailFromSent(loggedInUsername, emailId);
+
+            if (deletedFromInbox || deletedFromSent) {
+                return EMAIL_DELETED;
+            } else {
+                return EMAIL_NOT_FOUND;
+            }
+        } catch (NumberFormatException e) {
+            return INVALID_REQUEST;
+        }
+    }
+
+    private String handleLogout(String[] parts) {
+        if (loggedInUsername == null) return UNAUTHENTICATED;
+
+        loggedInUsername = null;
+        return LOGOUT_SUCCESS;
+    }
+
+    private String handleExit() {
+        return BYE;
+    }
+
+
 
 }
