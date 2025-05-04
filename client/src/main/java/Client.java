@@ -2,8 +2,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-import static protocols.EmailUtilities.HOSTNAME;
-import static protocols.EmailUtilities.PORT;
+import static protocols.EmailUtilities.*;
+
 
 public class Client {
     private Socket socket;
@@ -30,7 +30,9 @@ public class Client {
             System.out.println("1. Login");
             System.out.println("2. Register");
             System.out.println("3. Send Email");
-            System.out.println("4. Exit");
+            System.out.println("4. List Received");
+            System.out.println("5. List Sent");
+            System.out.println("6. Exit");
             System.out.print("Choice: ");
             String choice = scanner.nextLine();
 
@@ -38,13 +40,14 @@ public class Client {
                 case "1" -> login();
                 case "2" -> register();
                 case "3" -> sendEmail();
-                case "4" -> {
+                case "4" -> listReceived();
+                case "5" -> listSent();
+                case "6" -> {
                     exit();
                     sessionActive = false;
                 }
                 default -> System.out.println("Invalid choice. Try again.");
             }
-
         }
     }
 
@@ -54,7 +57,7 @@ public class Client {
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        String message = "LOGIN__" + username + "__" + password;
+        String message = LOGIN + DELIMITER + username + DELIMITER + password;
         sendAndReceive(message);
     }
 
@@ -64,12 +67,32 @@ public class Client {
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        String message = "REGISTER__" + username + "__" + password;
+        String message = REGISTER + DELIMITER + username + DELIMITER + password;
         sendAndReceive(message);
     }
 
+    private void sendEmail() {
+        System.out.print("Recipient(s) (comma-separated usernames): ");
+        String recipients = scanner.nextLine();
+        System.out.print("Subject: ");
+        String subject = scanner.nextLine();
+        System.out.print("Body: ");
+        String body = scanner.nextLine();
+
+        String message = SEND + DELIMITER + recipients + DELIMITER + subject + DELIMITER + body;
+        sendAndReceive(message);
+    }
+
+    private void listReceived() {
+        sendAndReceive(LIST_RECEIVED);
+    }
+
+    private void listSent() {
+        sendAndReceive(LIST_SENT);
+    }
+
     private void exit() {
-        sendAndReceive("EXIT");
+        sendAndReceive(EXIT);
         close();
     }
 
@@ -96,21 +119,7 @@ public class Client {
         }
     }
 
-    private void sendEmail() {
-        System.out.print("Recipient(s) (comma-separated usernames): ");
-        String recipients = scanner.nextLine();
-        System.out.print("Subject: ");
-        String subject = scanner.nextLine();
-        System.out.print("Body: ");
-        String body = scanner.nextLine();
-
-        String message = "SEND__" + recipients + "__" + subject + "__" + body;
-        sendAndReceive(message);
-    }
-
-
     public static void main(String[] args) {
-        Client client = new Client();
-        client.start();
+        new Client().start();
     }
 }

@@ -8,9 +8,7 @@ import static protocols.EmailUtilities.*;
 @Slf4j
 public class EmailClient {
     public static void main(String[] args) {
-        // TEST Code
         Scanner sc = new Scanner(System.in);
-
         TCPNetworkLayer network = new TCPNetworkLayer(HOSTNAME, PORT);
         try {
             network.connect();
@@ -20,13 +18,18 @@ public class EmailClient {
             return;
         }
 
-        boolean clientRunning = true;
-        while (clientRunning) {
+        boolean running = true;
+        while (running) {
+            System.out.println("Commands: LOGIN, REGISTER, SEND, LIST_RECEIVED, LIST_SENT, READ, DELETE, LOGOUT, EXIT");
             System.out.print("> ");
-            String request = sc.nextLine();
-            network.send(request);
+            String command = sc.nextLine();
+            network.send(command);
             String response = network.receive();
             System.out.println(response);
+            if (command.equals(EXIT)) {
+                running = false;
+                network.close();
+            }
         }
     }
 }
