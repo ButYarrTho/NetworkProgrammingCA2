@@ -85,6 +85,7 @@ public class ClientHandler implements Runnable {
 
         boolean success = storage.userManager.add(username, password);
         if (success) {
+            loggedInUsername = username;
             return REGISTER_SUCCESS;
         } else {
             return USER_ALREADY_EXISTS;
