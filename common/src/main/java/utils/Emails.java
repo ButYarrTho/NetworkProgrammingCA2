@@ -9,6 +9,12 @@ import static protocols.EmailUtilities.*;
 public class Emails {
     private static final DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern(TIMESTAMP);
 
+    /**
+     * Format the header of an email into a response string
+     *
+     * @param email The email to be formatted
+     * @return String representation of the email's headers
+     */
     public static String toHeaderResponseString(Email email) {
         return email.getId() +
                 SUBDELIMITER +
@@ -19,6 +25,11 @@ public class Emails {
                 email.getTimestamp().format(timestampFormat);
     }
 
+    /**
+     * Format the headers of emails into a response string
+     * @param emails The emails to be formatted
+     * @return String representation of the emails headers
+     */
     public static String toHeaderResponseList(Email[] emails) {
         StringBuilder formattedEmails = new StringBuilder();
         for (int i = 0; i < emails.length; i++) {
