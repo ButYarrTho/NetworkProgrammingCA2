@@ -67,7 +67,6 @@ public class ClientHandler implements Runnable {
         if (loggedInUsername != null) return ALREADY_LOGGED_IN;
         String username = parts[1];
         String password = parts[2];
-        // TODO: Replace with UserManager.getUser(username) or add UserManager as property of storage
         boolean success = storage.userManager.validateLogin(username, password);
 
         if (success) {
