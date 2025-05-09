@@ -128,7 +128,7 @@ public class ClientHandler implements Runnable {
         try {
             int emailId = Integer.parseInt(parts[1]);
 
-            model.Email email = storage.emailManager.findEmailInInbox(loggedInUsername, emailId);
+            Email email = storage.emailManager.findEmailInInbox(loggedInUsername, emailId);
             if (email == null) {
                 return EMAIL_NOT_FOUND;
             }
