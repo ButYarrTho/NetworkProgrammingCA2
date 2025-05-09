@@ -26,11 +26,12 @@ public class Emails {
     }
 
     /**
-     * Format the headers of emails into a response string
+     * Format the headers of multiple emails into a response string
+     *
      * @param emails The emails to be formatted
      * @return String representation of the emails headers
      */
-    public static String toHeaderResponseList(Email[] emails) {
+    public static String toHeaderResponseString(Email[] emails) {
         StringBuilder formattedEmails = new StringBuilder();
         for (int i = 0; i < emails.length; i++) {
             formattedEmails.append(toHeaderResponseString(emails[i]));
