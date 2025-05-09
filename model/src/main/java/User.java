@@ -1,5 +1,6 @@
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 @Data
@@ -9,5 +10,6 @@ public class User {
     private String email;
 
     @NonNull
+    @EqualsAndHashCode.Exclude
     private String password;
 }
