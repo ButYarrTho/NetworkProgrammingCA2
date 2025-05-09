@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class TCPNetworkLayer {
+public class TCPNetworkLayer implements INetworkLayer {
     private Socket dataSocket;
     private Scanner scanner;
     private PrintWriter outputStream;
@@ -41,6 +41,7 @@ public class TCPNetworkLayer {
     public String receive() {
         return scanner.nextLine();
     }
+
     public void close() {
         try {
             if (dataSocket != null && !dataSocket.isClosed()) {
