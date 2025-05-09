@@ -100,7 +100,7 @@ public class ClientHandler implements Runnable {
         String subject = parts[2];
         String body = parts[3];
 
-        String[] recipientArray = recipientPart.split(",");
+        String[] recipientArray = recipientPart.split(LIST_DELIMITER);
         List<String> recipients = Arrays.asList(recipientArray);
 
         List<String> invalidRecipients = new ArrayList<>();
@@ -112,7 +112,7 @@ public class ClientHandler implements Runnable {
         }
 
         if (!invalidRecipients.isEmpty()) {
-            return "USER_NOT_FOUND__" + String.join(",", invalidRecipients);
+            return USER_NOT_FOUND + DELIMITER + String.join(LIST_DELIMITER, invalidRecipients);
         }
 
         storage.emailManager.sendEmail(loggedInUsername, recipients, subject, body);
@@ -132,7 +132,7 @@ public class ClientHandler implements Runnable {
                 return EMAIL_NOT_FOUND;
             }
 
-            return "EMAIL_CONTENT__" + email.getSubject() + "::" + email.getBody();
+            return EMAIL_CONTENT + DELIMITER + email.getSubject() + SUBDELIMITER + email.getBody();
         } catch (NumberFormatException e) {
             return INVALID_REQUEST;
         }
