@@ -25,51 +25,78 @@ public class Client {
 
     public void start() {
         boolean clientRunning = true;
+        boolean userSignedIn = false;
 
         while (clientRunning) {
-            System.out.println("1. Login");
-            System.out.println("2. Register");
-            System.out.println("3. Send Email");
-            System.out.println("4. List Received");
-            System.out.println("5. List Sent");
-            System.out.println("6. Exit");
-            System.out.print("Choice: ");
-            String choice = scanner.nextLine();
+            if (userSignedIn) {
+                System.out.println("1. Send Email");
+                System.out.println("2. List Received");
+                System.out.println("3. List Sent");
+                System.out.println("4. Log out");
+                System.out.println("5. Exit");
+                System.out.print("Choice: ");
+                String choice = scanner.nextLine();
 
-            switch (choice) {
-                case "1" -> login();
-                case "2" -> register();
-                case "3" -> sendEmail();
-                case "4" -> listReceived();
-                case "5" -> listSent();
-                case "6" -> {
-                    exit();
-                    clientRunning = false;
+                switch (choice) {
+                    case "1" -> sendEmail();
+                    case "2" -> listReceived();
+                    case "3" -> listSent();
+                    case "4" -> {
+                        logout();
+                        userSignedIn = false;
+                    }
+                    case "5" -> {
+                        exit();
+                        clientRunning = false;
+                    }
+                    default -> System.out.println("Invalid choice. Try again.");
                 }
-                default -> System.out.println("Invalid choice. Try again.");
-            }
+            } else {
+                System.out.println("1. Login");
+                System.out.println("2. Register");
+                System.out.println("3. Exit");
 
+                String choice = scanner.nextLine();
+
+                switch (choice) {
+                    case "1" -> {
+                        if (login()) userSignedIn = true;
+                    }
+                    case "2" -> {
+                        if (register()) userSignedIn = true;
+                    }
+                    case "3" -> {
+                        clientRunning = false;
+                        exit();
+                    }
+                    default -> System.out.println("Invalid choice. Try again.");
+                }
+            }
         }
     }
 
-    private void login() {
+    private boolean login() {
         System.out.print("Username: ");
         String username = scanner.nextLine();
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
         String message = LOGIN + DELIMITER + username + DELIMITER + password;
-        sendAndReceive(message);
+        String response = sendAndReceive(message);
+
+        return response.equalsIgnoreCase(LOGIN_SUCCESS);
     }
 
-    private void register() {
+    private boolean register() {
         System.out.print("Username: ");
         String username = scanner.nextLine();
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
         String message = REGISTER + DELIMITER + username + DELIMITER + password;
-        sendAndReceive(message);
+        String response = sendAndReceive(message);
+
+        return response.equalsIgnoreCase(REGISTER_SUCCESS);
     }
 
     private void sendEmail() {
@@ -102,7 +129,11 @@ public class Client {
         }
     }
 
-    private void sendAndReceive(String message) {
+    private void logout() {
+        sendAndReceive(LOGOUT);
+    }
+
+    private String sendAndReceive(String message) {
         network.send(message);
         String response = network.receive();
         if (response != null) {
@@ -110,6 +141,8 @@ public class Client {
         } else {
             System.out.println("Server closed the connection.");
         }
+
+        return response;
     }
 
     public static void main(String[] args) {
