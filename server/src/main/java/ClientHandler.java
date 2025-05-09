@@ -120,6 +120,10 @@ public class ClientHandler implements Runnable {
         return EMAIL_SENT;
     }
 
+    /**
+     * List received emails handler
+     * @return Response string
+     */
     private String handleListReceived() {
         if (loggedInUsername == null) return UNAUTHENTICATED;
         List<Email> inbox = storage.emailManager.getInbox(loggedInUsername);
