@@ -27,25 +27,24 @@ public class ClientHandler implements Runnable {
                 log.info("Received request: {}", request);
                 String[] parts = request.split(DELIMITER);
 
-                String response;
-
-                switch (parts[0]) {
-                    case LOGIN -> response = handleLogin(parts);
-                    case REGISTER -> response = handleRegister(parts);
-                    case SEND -> response = handleSend(parts);
+                String response = switch (parts[0]) {
+                    case LOGIN -> handleLogin(parts);
+                    case REGISTER -> handleRegister(parts);
+                    case SEND -> handleSend(parts);
                     //case LIST_RECEIVED -> response = handleListReceived(parts);
                     //case LIST_SENT -> response = handleListSent(parts);
                     //case SEARCH_RECEIVED -> response = handleSearchReceived(parts);
                     //case SEARCH_SENT -> response = handleSearchSent(parts);
-                    case READ -> response = handleRead(parts);
-                    case DELETE -> response = handleDelete(parts);
-                    case LOGOUT -> response = handleLogout(parts);  // <-- updated
+                    case READ -> handleRead(parts);
+                    case DELETE -> handleDelete(parts);
+                    case LOGOUT -> handleLogout(parts);
                     case EXIT -> {
-                        response = handleExit();
                         clientSession = false;
+                        yield handleExit();
                     }
-                    default -> response = INVALID_REQUEST;
-                }
+                    default -> INVALID_REQUEST;
+                };
+
                 network.send(response);
             }
         } catch (Exception e) {
