@@ -10,8 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>client</module>
-        <module>model</module>
-        <module>network</module>
         <module>server</module>
         <module>common</module>
     </modules>

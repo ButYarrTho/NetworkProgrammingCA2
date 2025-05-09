@@ -1,4 +1,6 @@
 import lombok.extern.slf4j.Slf4j;
+import model.Email;
+import networking.INetworkLayer;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

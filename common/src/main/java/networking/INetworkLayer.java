@@ -1,3 +1,5 @@
+package networking;
+
 import java.io.IOException;
 
 public interface INetworkLayer {

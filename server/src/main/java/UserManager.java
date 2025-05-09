@@ -1,3 +1,4 @@
+import model.User;
 import utils.StringUtils;
 
 import java.util.HashMap;

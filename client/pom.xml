@@ -19,12 +19,6 @@
     <dependencies>
         <dependency>
             <groupId>com.networkprogrammingca2</groupId>
-            <artifactId>network</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.networkprogrammingca2</groupId>
             <artifactId>common</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>

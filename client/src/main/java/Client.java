@@ -1,4 +1,6 @@
 import lombok.extern.slf4j.Slf4j;
+import networking.INetworkLayer;
+import networking.TCPNetworkLayer;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -29,7 +31,7 @@ public class Client {
 
         while (clientRunning) {
             if (userSignedIn) {
-                System.out.println("1. Send Email");
+                System.out.println("1. Send model.Email");
                 System.out.println("2. List Received");
                 System.out.println("3. List Sent");
                 System.out.println("4. Log out");
