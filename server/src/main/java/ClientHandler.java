@@ -1,5 +1,6 @@
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +9,7 @@ import static protocols.EmailUtilities.*;
 
 @Slf4j
 public class ClientHandler implements Runnable {
+    private static final DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern(TIMESTAMP);
     private final INetworkLayer network;
     private final Storage storage;
     private String loggedInUsername = null;
@@ -31,7 +33,7 @@ public class ClientHandler implements Runnable {
                     case LOGIN -> handleLogin(parts);
                     case REGISTER -> handleRegister(parts);
                     case SEND -> handleSend(parts);
-                    //case LIST_RECEIVED -> response = handleListReceived(parts);
+                    case LIST_RECEIVED -> handleListReceived();
                     //case LIST_SENT -> response = handleListSent(parts);
                     //case SEARCH_RECEIVED -> response = handleSearchReceived(parts);
                     //case SEARCH_SENT -> response = handleSearchSent(parts);
@@ -53,7 +55,6 @@ public class ClientHandler implements Runnable {
             network.close();
         }
     }
-
 
     /**
      * Handle user login
@@ -91,7 +92,6 @@ public class ClientHandler implements Runnable {
         }
     }
 
-
     private String handleSend(String[] parts) {
         if (loggedInUsername == null) return UNAUTHENTICATED;
         if (parts.length != 4) return INVALID_REQUEST;
@@ -118,6 +118,31 @@ public class ClientHandler implements Runnable {
         storage.emailManager.sendEmail(loggedInUsername, recipients, subject, body);
 
         return EMAIL_SENT;
+    }
+
+    private String handleListReceived() {
+        if (loggedInUsername == null) return UNAUTHENTICATED;
+        List<Email> inbox = storage.emailManager.getInbox(loggedInUsername);
+        if (inbox.isEmpty()) return NO_EMAILS;
+
+        StringBuilder emails = new StringBuilder(RECEIVED).append(DELIMITER);
+        for (int i = 0; i < inbox.size(); i++) {
+            Email email = inbox.get(i);
+            emails
+                    .append(email.getId())
+                    .append(SUBDELIMITER)
+                    .append(email.getSender())
+                    .append(SUBDELIMITER)
+                    .append(email.getSubject())
+                    .append(SUBDELIMITER)
+                    .append(email.getTimestamp().format(timestampFormat));
+
+            if (i != inbox.size() - 1) {
+                emails.append(DELIMITER);
+            }
+        }
+
+        return emails.toString();
     }
 
     private String handleRead(String[] parts) {
