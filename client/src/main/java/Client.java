@@ -24,8 +24,9 @@ public class Client {
     }
 
     public void start() {
-        boolean sessionActive = true;
-        while (sessionActive) {
+        boolean clientRunning = true;
+
+        while (clientRunning) {
             System.out.println("1. Login");
             System.out.println("2. Register");
             System.out.println("3. Send Email");
@@ -43,7 +44,7 @@ public class Client {
                 case "5" -> listSent();
                 case "6" -> {
                     exit();
-                    sessionActive = false;
+                    clientRunning = false;
                 }
                 default -> System.out.println("Invalid choice. Try again.");
             }
