@@ -1,27 +1,26 @@
-import java.io.*;
-import java.net.Socket;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
 import java.util.Scanner;
 
 import static protocols.EmailUtilities.*;
 
-
+@Slf4j
 public class Client {
-    private Socket socket;
-    private BufferedReader reader;
-    private PrintWriter writer;
-    private Scanner scanner;
+    private final Scanner scanner;
+    private final INetworkLayer network;
 
     public Client() {
+        network = new TCPNetworkLayer(HOSTNAME, PORT);
+        scanner = new Scanner(System.in);
         try {
-            socket = new Socket(HOSTNAME, PORT);
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new PrintWriter(socket.getOutputStream(), true);
-            scanner = new Scanner(System.in);
-            System.out.println("Connected to server at " + HOSTNAME + ":" + PORT);
+            network.connect();
         } catch (IOException e) {
-            System.out.println("Unable to connect to server.");
+            log.error("Unable to connect to server.");
             System.exit(1);
+            return;
         }
+        System.out.println("Connected to server at " + HOSTNAME + ":" + PORT);
     }
 
     public void start() {
@@ -94,29 +93,21 @@ public class Client {
 
     private void exit() {
         sendAndReceive(EXIT);
-        close();
-    }
-
-    private void sendAndReceive(String message) {
-        writer.println(message);
         try {
-            String response = reader.readLine();
-            if (response != null) {
-                System.out.println("Server: " + response);
-            } else {
-                System.out.println("Server closed the connection.");
-            }
+            network.disconnect();
+            System.out.println("Disconnected from server.");
         } catch (IOException e) {
-            System.out.println("Error communicating with server.");
+            log.error("Error closing connection.");
         }
     }
 
-    private void close() {
-        try {
-            socket.close();
-            System.out.println("Disconnected from server.");
-        } catch (IOException e) {
-            System.out.println("Error closing connection.");
+    private void sendAndReceive(String message) {
+        network.send(message);
+        String response = network.receive();
+        if (response != null) {
+            System.out.println("Server: " + response);
+        } else {
+            System.out.println("Server closed the connection.");
         }
     }
 

@@ -8,10 +8,10 @@ import static protocols.EmailUtilities.*;
 
 @Slf4j
 public class ClientHandler implements Runnable {
-    private final TCPNetworkLayer network;
+    private final INetworkLayer network;
     private final Storage storage;
     private String loggedInUsername = null;
-    public ClientHandler(TCPNetworkLayer networkLayer, Storage storage) {
+    public ClientHandler(INetworkLayer networkLayer, Storage storage) {
         this.network = networkLayer;
         this.storage = storage;
     }

@@ -24,7 +24,7 @@ public class ThreadedEmailTCPServer {
                 log.info("Email server on port {}", EmailUtilities.PORT);
                 while (serverSessionValid) {
                     Socket client = server.accept();
-                    TCPNetworkLayer net = new TCPNetworkLayer(client);
+                    INetworkLayer net = new TCPNetworkLayer(client);
                     pool.submit(new ClientHandler(net, store));
                 }
             } catch (Exception e) {
