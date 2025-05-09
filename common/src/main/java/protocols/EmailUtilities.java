@@ -5,8 +5,9 @@ public class EmailUtilities {
     public static final String HOSTNAME       = "localhost";
     public static final int    PORT           = 15000;
 
-    public static final String DELIMITER      = "%%";
+    public static final String DELIMITER      = "__";
     public static final String LIST_DELIMITER = ",";
+    public static final String SUBDELIMITER   = "::";
     public static final String TIMESTAMP      = "yyyy-MM-dd HH:mm";
 
     public static final String LOGIN           = "LOGIN";
