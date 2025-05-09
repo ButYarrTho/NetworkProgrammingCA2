@@ -19,7 +19,8 @@ public class Storage {
         };
 
         for (User user : users) {
-            userManager.addUser(user);
+            // I can't believe this is the easiest way #giveusstructsinjava
+            userManager.add(user.getEmail(), user.getPassword());
         }
 
         ArrayList<String> recipients = new ArrayList<>();

@@ -1,3 +1,4 @@
+import utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -5,7 +6,14 @@ import java.util.Map;
 public class UserManager {
     private final Map<String, User> users = new HashMap<>();
 
-    public synchronized boolean addUser(User user) {
+    public boolean add(String email, String password) {
+        if (!StringUtils.isEmail(email)) return false;
+
+        User newUsr = new User(email, password);
+        return add(newUsr);
+    }
+
+    private boolean add(User user) {
         if (users.containsKey(user.getEmail())) {
             return false;
         }

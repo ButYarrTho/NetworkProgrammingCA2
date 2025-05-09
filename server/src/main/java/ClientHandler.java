@@ -82,9 +82,8 @@ public class ClientHandler implements Runnable {
         if (loggedInUsername != null) return ALREADY_LOGGED_IN;
         String username = parts[1];
         String password = parts[2];
-        User newUser = new User(username, password);
 
-        boolean success = storage.userManager.addUser(newUser);
+        boolean success = storage.userManager.add(username, password);
         if (success) {
             return REGISTER_SUCCESS;
         } else {
