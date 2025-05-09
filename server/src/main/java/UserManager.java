@@ -20,4 +20,8 @@ public class UserManager {
     public synchronized boolean userExists(String username) {
         return users.containsKey(username);
     }
+
+    public int size() {
+        return users.size();
+    }
 }
