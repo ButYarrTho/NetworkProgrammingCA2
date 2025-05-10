@@ -3,6 +3,7 @@ package utils;
 import model.Email;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 
 import static protocols.EmailUtilities.TIMESTAMP;
@@ -15,7 +16,7 @@ public class Emails {
      *
      * @param email     Email to be formatted
      * @param delimiter Character sequence delimiting the values
-     * @return String representation of the email's headers
+     * @return String representation of the email headers
      */
     public static String toHeaderResponseString(Email email, String delimiter) {
         return email.getId() +
@@ -35,11 +36,11 @@ public class Emails {
      * @param subdelimiter Character sequence delimiting the values
      * @return String representation of the emails headers
      */
-    public static String toHeaderResponseString(Email[] emails, String delimiter, String subdelimiter) {
+    public static String toHeaderResponseString(List<Email> emails, String delimiter, String subdelimiter) {
         StringBuilder formattedEmails = new StringBuilder();
-        for (int i = 0; i < emails.length; i++) {
-            formattedEmails.append(toHeaderResponseString(emails[i], subdelimiter));
-            if (i != emails.length - 1) formattedEmails.append(delimiter);
+        for (int i = 0; i < emails.size(); i++) {
+            formattedEmails.append(toHeaderResponseString(emails.get(i), subdelimiter));
+            if (i != emails.size() - 1) formattedEmails.append(delimiter);
         }
 
         return formattedEmails.substring(0, formattedEmails.length() - delimiter.length());
@@ -50,9 +51,9 @@ public class Emails {
      *
      * @param emails       Emails to search through
      * @param searchString The string to search for
-     * @return Array of emails containing the search string.
+     * @return List of emails containing the search string.
      */
-    public static Email[] query(List<Email> emails, String searchString) {
+    public static List<Email> query(Collection<Email> emails, String searchString) {
         return emails.stream()
                 .filter(email -> {
                     String lowerCaseQuery = searchString.toLowerCase();
@@ -61,6 +62,6 @@ public class Emails {
                             || email.getSender().toLowerCase().contains(lowerCaseQuery)
                             || email.getRecipients().stream().anyMatch(recipient -> recipient.toLowerCase().contains(lowerCaseQuery));
                 })
-                .toArray(Email[]::new);
+                .toList();
     }
 }

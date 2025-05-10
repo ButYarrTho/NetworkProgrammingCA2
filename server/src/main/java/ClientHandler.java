@@ -133,10 +133,7 @@ public class ClientHandler implements Runnable {
         List<Email> inbox = storage.emailManager.getInbox(loggedInUsername);
         if (inbox.isEmpty()) return NO_EMAILS;
 
-        Email[] emails = new Email[inbox.size()];
-        inbox.toArray(emails);
-
-        return Emails.toHeaderResponseString(emails, DELIMITER, SUBDELIMITER);
+        return Emails.toHeaderResponseString(inbox, DELIMITER, SUBDELIMITER);
     }
 
     /**
@@ -149,10 +146,7 @@ public class ClientHandler implements Runnable {
         List<Email> outbox = storage.emailManager.getSent(loggedInUsername);
         if (outbox.isEmpty()) return NO_EMAILS;
 
-        Email[] emails = new Email[outbox.size()];
-        outbox.toArray(emails);
-
-        return Emails.toHeaderResponseString(emails, DELIMITER, SUBDELIMITER);
+        return Emails.toHeaderResponseString(outbox, DELIMITER, SUBDELIMITER);
     }
 
     /**
@@ -168,7 +162,7 @@ public class ClientHandler implements Runnable {
         List<Email> inbox = storage.emailManager.getInbox(loggedInUsername);
         if (inbox.isEmpty()) return NO_EMAILS;
 
-        Email[] results = Emails.query(inbox, query);
+        List<Email> results = Emails.query(inbox, query);
 
         return Emails.toHeaderResponseString(results, DELIMITER, SUBDELIMITER);
     }
@@ -186,7 +180,7 @@ public class ClientHandler implements Runnable {
         List<Email> outbox = storage.emailManager.getSent(loggedInUsername);
         if (outbox.isEmpty()) return NO_EMAILS;
 
-        Email[] results = Emails.query(outbox, query);
+        List<Email> results = Emails.query(outbox, query);
 
         return Emails.toHeaderResponseString(results, DELIMITER, SUBDELIMITER);
     }
