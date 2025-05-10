@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static protocols.EmailUtilities.*;
 
@@ -38,7 +40,7 @@ public class ClientHandler implements Runnable {
                     case SEND -> handleSend(parts);
                     case LIST_RECEIVED -> handleListReceived();
                     case LIST_SENT -> handleListSent();
-                    //case SEARCH_RECEIVED -> response = handleSearchReceived(parts);
+                    case SEARCH_RECEIVED -> handleSearchReceived(parts);
                     //case SEARCH_SENT -> response = handleSearchSent(parts);
                     case READ -> handleRead(parts);
                     case DELETE -> handleDelete(parts);
@@ -153,6 +155,26 @@ public class ClientHandler implements Runnable {
         outbox.toArray(emails);
 
         return Emails.toHeaderResponseString(emails, DELIMITER, SUBDELIMITER);
+    }
+
+    /**
+     * Search received email handler.
+     *
+     * @param parts Parts of the request
+     * @return Response string
+     */
+    private String handleSearchReceived(String[] parts) {
+        if (loggedInUsername == null) return UNAUTHENTICATED;
+        if (parts.length != 2) return INVALID_REQUEST;
+        String query = parts[1].toLowerCase();
+        var inbox = storage.emailManager.getInbox(loggedInUsername);
+        if (inbox.isEmpty()) return NO_EMAILS;
+
+        Email[] results = inbox.stream()
+                .filter(email -> email.getBody().toLowerCase().contains(query))
+                .toArray(Email[]::new);
+
+        return Emails.toHeaderResponseString(results, DELIMITER, SUBDELIMITER);
     }
 
     private String handleRead(String[] parts) {
