@@ -37,7 +37,7 @@ public class ClientHandler implements Runnable {
                     case REGISTER -> handleRegister(parts);
                     case SEND -> handleSend(parts);
                     case LIST_RECEIVED -> handleListReceived();
-                    //case LIST_SENT -> response = handleListSent(parts);
+                    case LIST_SENT -> handleListSent();
                     //case SEARCH_RECEIVED -> response = handleSearchReceived(parts);
                     //case SEARCH_SENT -> response = handleSearchSent(parts);
                     case READ -> handleRead(parts);
@@ -135,6 +135,22 @@ public class ClientHandler implements Runnable {
 
         Email[] emails = new Email[inbox.size()];
         inbox.toArray(emails);
+
+        return Emails.toHeaderResponseString(emails, DELIMITER, SUBDELIMITER);
+    }
+
+    /**
+     * List sent emails handler.
+     *
+     * @return Response string
+     */
+    private String handleListSent() {
+        if (loggedInUsername == null) return UNAUTHENTICATED;
+        List<Email> outbox = storage.emailManager.getSent(loggedInUsername);
+        if (outbox.isEmpty()) return NO_EMAILS;
+
+        Email[] emails = new Email[outbox.size()];
+        outbox.toArray(emails);
 
         return Emails.toHeaderResponseString(emails, DELIMITER, SUBDELIMITER);
     }
