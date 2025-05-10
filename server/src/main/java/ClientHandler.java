@@ -7,8 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static protocols.EmailUtilities.*;
 
@@ -160,19 +158,17 @@ public class ClientHandler implements Runnable {
     /**
      * Search received email handler.
      *
-     * @param parts Parts of the request
+     * @param parts Parts of a request
      * @return Response string
      */
     private String handleSearchReceived(String[] parts) {
         if (loggedInUsername == null) return UNAUTHENTICATED;
         if (parts.length != 2) return INVALID_REQUEST;
-        String query = parts[1].toLowerCase();
-        var inbox = storage.emailManager.getInbox(loggedInUsername);
+        String query = parts[1];
+        List<Email> inbox = storage.emailManager.getInbox(loggedInUsername);
         if (inbox.isEmpty()) return NO_EMAILS;
 
-        Email[] results = inbox.stream()
-                .filter(email -> email.getBody().toLowerCase().contains(query))
-                .toArray(Email[]::new);
+        Email[] results = Emails.query(inbox, query);
 
         return Emails.toHeaderResponseString(results, DELIMITER, SUBDELIMITER);
     }
@@ -186,18 +182,11 @@ public class ClientHandler implements Runnable {
     private String handleSearchSent(String[] parts) {
         if (loggedInUsername == null) return UNAUTHENTICATED;
         if (parts.length != 2) return INVALID_REQUEST;
-        String query = parts[1].toLowerCase();
+        String query = parts[1];
         List<Email> outbox = storage.emailManager.getSent(loggedInUsername);
         if (outbox.isEmpty()) return NO_EMAILS;
 
-        Email[] results = outbox.stream()
-                .filter(email ->
-                        email.getBody().toLowerCase().contains(query)
-                                || email.getSubject().toLowerCase().contains(query)
-                                || email.getSender().toLowerCase().contains(query)
-                                || email.getRecipients().stream().anyMatch(recipient -> recipient.toLowerCase().contains(query))
-                )
-                .toArray(Email[]::new);
+        Email[] results = Emails.query(outbox, query);
 
         return Emails.toHeaderResponseString(results, DELIMITER, SUBDELIMITER);
     }

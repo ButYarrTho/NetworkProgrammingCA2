@@ -3,6 +3,7 @@ package utils;
 import model.Email;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static protocols.EmailUtilities.TIMESTAMP;
 
@@ -42,5 +43,24 @@ public class Emails {
         }
 
         return formattedEmails.substring(0, formattedEmails.length() - delimiter.length());
+    }
+
+    /**
+     * Search for a string in emails. Searches through the body, subject, sender, and recipients.
+     *
+     * @param emails       Emails to search through
+     * @param searchString The string to search for
+     * @return Array of emails containing the search string.
+     */
+    public static Email[] query(List<Email> emails, String searchString) {
+        return emails.stream()
+                .filter(email -> {
+                    String lowerCaseQuery = searchString.toLowerCase();
+                    return email.getBody().toLowerCase().contains(lowerCaseQuery)
+                            || email.getSubject().toLowerCase().contains(lowerCaseQuery)
+                            || email.getSender().toLowerCase().contains(lowerCaseQuery)
+                            || email.getRecipients().stream().anyMatch(recipient -> recipient.toLowerCase().contains(lowerCaseQuery));
+                })
+                .toArray(Email[]::new);
     }
 }
