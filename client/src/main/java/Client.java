@@ -32,8 +32,12 @@ public class Client {
         while (clientRunning) {
             if (userSignedIn) {
                 System.out.println("1. Send Email");
-                System.out.println("2. List Received");
-                System.out.println("3. List Sent");
+                System.out.println("2. View Email");
+                System.out.println("3. List Received");
+                System.out.println("4. List Sent");
+                System.out.println("5. Search in Received");
+                System.out.println("6. Search in Sent");
+                System.out.println("7. Delete Email");
                 // Using 0 and E values to allow expanding the options list
                 // without needing to readjust the numbering for these two options
                 System.out.println("0. Log out");
@@ -43,8 +47,12 @@ public class Client {
 
                 switch (choice.toUpperCase()) {
                     case "1" -> sendEmail();
-                    case "2" -> listReceived();
-                    case "3" -> listSent();
+                    case "2" -> viewEmail();
+                    case "3" -> listReceived();
+                    case "4" -> listSent();
+                    case "5" -> searchReceived();
+                    case "6" -> searchSent();
+                    case "7" -> deleteEmail();
                     case "0" -> {
                         logout();
                         userSignedIn = false;
@@ -116,12 +124,28 @@ public class Client {
         sendAndReceive(message);
     }
 
+    private void viewEmail() {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
     private void listReceived() {
         sendAndReceive(LIST_RECEIVED);
     }
 
     private void listSent() {
         sendAndReceive(LIST_SENT);
+    }
+
+    private void searchReceived() {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    private void searchSent() {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    private void deleteEmail() {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     private void exit() {
