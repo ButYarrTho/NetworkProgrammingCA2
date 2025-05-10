@@ -2,11 +2,14 @@ package utils;
 
 import model.Email;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static protocols.EmailUtilities.TIMESTAMP;
+import static protocols.EmailUtilities.*;
 
 public class Emails {
     private static final DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern(TIMESTAMP);
@@ -63,5 +66,64 @@ public class Emails {
                             || email.getRecipients().stream().anyMatch(recipient -> recipient.toLowerCase().contains(lowerCaseQuery));
                 })
                 .toList();
+    }
+
+    /**
+     * Parse emails from a response string. Utilises parseEmail method.
+     *
+     * @param response Response returned by the server
+     * @return List of emails. Empty list if no emails were contained in the response.
+     */
+    public static List<Email> parseEmailsResponse(String response) {
+        String[] splitResponse = response.split(DELIMITER);
+        List<Email> emails = new ArrayList<>();
+
+        if (splitResponse.length > 2) return emails;
+
+        // Start at 1 to ignore the action name
+        for (int i = 1; i < splitResponse.length; i++) {
+            emails.add(parseEmail(splitResponse[i]));
+        }
+
+        return emails;
+    }
+
+    /**
+     * Parse an email from string
+     *
+     * @param emailString Email as string
+     * @return Email object or null if the format could not be determined.
+     */
+    public static Email parseEmail(String emailString) {
+        String[] emailParts = emailString.split(SUBDELIMITER);
+
+        return switch (emailParts.length) {
+            case 4 -> {
+                int id;
+                try {
+                    id = Integer.parseInt(emailParts[0]);
+                } catch (NumberFormatException e) {
+                    id = 0;
+                }
+                LocalDateTime timestamp;
+                try {
+                    timestamp = LocalDateTime.parse(emailParts[3], timestampFormat);
+                } catch (DateTimeParseException e) {
+                    timestamp = LocalDateTime.MIN;
+                }
+
+                yield Email.builder()
+                        .id(id)
+                        .sender(emailParts[1])
+                        .subject(emailParts[2])
+                        .timestamp(timestamp)
+                        .build();
+            }
+            case 2 -> Email.builder()
+                    .subject(emailParts[0])
+                    .body(emailParts[1])
+                    .build();
+            default -> null;
+        };
     }
 }
