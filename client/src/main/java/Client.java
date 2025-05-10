@@ -34,20 +34,22 @@ public class Client {
                 System.out.println("1. Send Email");
                 System.out.println("2. List Received");
                 System.out.println("3. List Sent");
-                System.out.println("4. Log out");
-                System.out.println("5. Exit");
+                // Using 0 and E values to allow expanding the options list
+                // without needing to readjust the numbering for these two options
+                System.out.println("0. Log out");
+                System.out.println("E to Exit");
                 System.out.print("Choice: ");
                 String choice = scanner.nextLine();
 
-                switch (choice) {
+                switch (choice.toUpperCase()) {
                     case "1" -> sendEmail();
                     case "2" -> listReceived();
                     case "3" -> listSent();
-                    case "4" -> {
+                    case "0" -> {
                         logout();
                         userSignedIn = false;
                     }
-                    case "5" -> {
+                    case "E" -> {
                         exit();
                         clientRunning = false;
                     }
@@ -56,18 +58,19 @@ public class Client {
             } else {
                 System.out.println("1. Login");
                 System.out.println("2. Register");
-                System.out.println("3. Exit");
+                // See comment above in authenticated options
+                System.out.println("E to Exit");
 
                 String choice = scanner.nextLine();
 
-                switch (choice) {
+                switch (choice.toUpperCase()) {
                     case "1" -> {
                         if (login()) userSignedIn = true;
                     }
                     case "2" -> {
                         if (register()) userSignedIn = true;
                     }
-                    case "3" -> {
+                    case "E" -> {
                         clientRunning = false;
                         exit();
                     }
