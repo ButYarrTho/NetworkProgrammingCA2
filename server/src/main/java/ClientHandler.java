@@ -41,7 +41,7 @@ public class ClientHandler implements Runnable {
                     case LIST_RECEIVED -> handleListReceived();
                     case LIST_SENT -> handleListSent();
                     case SEARCH_RECEIVED -> handleSearchReceived(parts);
-                    //case SEARCH_SENT -> response = handleSearchSent(parts);
+                    case SEARCH_SENT -> handleSearchSent(parts);
                     case READ -> handleRead(parts);
                     case DELETE -> handleDelete(parts);
                     case LOGOUT -> handleLogout(parts);
@@ -172,6 +172,31 @@ public class ClientHandler implements Runnable {
 
         Email[] results = inbox.stream()
                 .filter(email -> email.getBody().toLowerCase().contains(query))
+                .toArray(Email[]::new);
+
+        return Emails.toHeaderResponseString(results, DELIMITER, SUBDELIMITER);
+    }
+
+    /**
+     * Search sent emails action.
+     *
+     * @param parts Parts of a request
+     * @return Response string
+     */
+    private String handleSearchSent(String[] parts) {
+        if (loggedInUsername == null) return UNAUTHENTICATED;
+        if (parts.length != 2) return INVALID_REQUEST;
+        String query = parts[1].toLowerCase();
+        List<Email> outbox = storage.emailManager.getSent(loggedInUsername);
+        if (outbox.isEmpty()) return NO_EMAILS;
+
+        Email[] results = outbox.stream()
+                .filter(email ->
+                        email.getBody().toLowerCase().contains(query)
+                                || email.getSubject().toLowerCase().contains(query)
+                                || email.getSender().toLowerCase().contains(query)
+                                || email.getRecipients().stream().anyMatch(recipient -> recipient.toLowerCase().contains(query))
+                )
                 .toArray(Email[]::new);
 
         return Emails.toHeaderResponseString(results, DELIMITER, SUBDELIMITER);
