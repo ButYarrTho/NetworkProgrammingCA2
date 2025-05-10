@@ -1,6 +1,7 @@
 import lombok.extern.slf4j.Slf4j;
 import model.Email;
 import networking.INetworkLayer;
+import utils.Emails;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -124,6 +125,7 @@ public class ClientHandler implements Runnable {
 
     /**
      * List received emails handler
+     *
      * @return Response string
      */
     private String handleListReceived() {
@@ -131,24 +133,10 @@ public class ClientHandler implements Runnable {
         List<Email> inbox = storage.emailManager.getInbox(loggedInUsername);
         if (inbox.isEmpty()) return NO_EMAILS;
 
-        StringBuilder emails = new StringBuilder(RECEIVED).append(DELIMITER);
-        for (int i = 0; i < inbox.size(); i++) {
-            Email email = inbox.get(i);
-            emails
-                    .append(email.getId())
-                    .append(SUBDELIMITER)
-                    .append(email.getSender())
-                    .append(SUBDELIMITER)
-                    .append(email.getSubject())
-                    .append(SUBDELIMITER)
-                    .append(email.getTimestamp().format(timestampFormat));
+        Email[] emails = new Email[inbox.size()];
+        inbox.toArray(emails);
 
-            if (i != inbox.size() - 1) {
-                emails.append(DELIMITER);
-            }
-        }
-
-        return emails.toString();
+        return Emails.toHeaderResponseString(emails, DELIMITER, SUBDELIMITER);
     }
 
     private String handleRead(String[] parts) {
