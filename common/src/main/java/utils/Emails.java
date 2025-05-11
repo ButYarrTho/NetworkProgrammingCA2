@@ -46,7 +46,7 @@ public class Emails {
             if (i != emails.size() - 1) formattedEmails.append(delimiter);
         }
 
-        return formattedEmails.substring(0, formattedEmails.length() - delimiter.length());
+        return formattedEmails.toString();
     }
 
     /**
