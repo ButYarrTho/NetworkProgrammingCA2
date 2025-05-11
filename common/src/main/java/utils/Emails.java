@@ -78,7 +78,7 @@ public class Emails {
         String[] splitResponse = response.split(DELIMITER);
         List<Email> emails = new ArrayList<>();
 
-        if (splitResponse.length > 2) return emails;
+        if (splitResponse.length < 2) return emails;
 
         // Start at 1 to ignore the action name
         for (int i = 1; i < splitResponse.length; i++) {
