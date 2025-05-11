@@ -165,7 +165,7 @@ public class Client {
             System.out.println("Please select an email.");
         }
 
-        String readEmailResponse = sendAndReceive(READ + DELIMITER + selection, false);
+        String readEmailResponse = sendAndReceive(READ + DELIMITER + parsedEmails.get(selection - 1).getId(), false);
         List<Email> readEmails = Emails.parseEmailsResponse(readEmailResponse);
         if (readEmails.isEmpty()) {
             System.out.println("Couldn't fetch the email");
