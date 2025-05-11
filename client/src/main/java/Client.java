@@ -151,7 +151,9 @@ public class Client {
     }
 
     private void deleteEmail() {
-        throw new UnsupportedOperationException("Not implemented");
+        System.out.print("Enter email ID to delete: ");
+        String id = scanner.nextLine();
+        sendAndReceive(DELETE + DELIMITER + id);
     }
 
     private void exit() {
