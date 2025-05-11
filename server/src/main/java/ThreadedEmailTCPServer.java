@@ -22,6 +22,7 @@ public class ThreadedEmailTCPServer {
                 new ThreadPoolExecutor.CallerRunsPolicy()
         )) {
             Storage store = new Storage();
+            store.seed();
             try (ServerSocket server = new ServerSocket(EmailUtilities.PORT)) {
                 log.info("Email server on port {}", EmailUtilities.PORT);
                 while (serverSessionValid) {
