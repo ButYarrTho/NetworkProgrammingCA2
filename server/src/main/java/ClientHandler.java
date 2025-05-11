@@ -194,7 +194,10 @@ public class ClientHandler implements Runnable {
 
             Email email = storage.emailManager.findEmailInInbox(loggedInUsername, emailId);
             if (email == null) {
-                return EMAIL_NOT_FOUND;
+                email = storage.emailManager.findEmailInSent(loggedInUsername, emailId);
+                if (email == null) {
+                    return EMAIL_NOT_FOUND;
+                }
             }
 
             return EMAIL_CONTENT + DELIMITER + email.getSubject() + SUBDELIMITER + email.getBody();
