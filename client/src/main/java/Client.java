@@ -1,8 +1,12 @@
 import lombok.extern.slf4j.Slf4j;
+import model.Email;
 import networking.INetworkLayer;
 import networking.TCPNetworkLayer;
+import utils.Emails;
 
 import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import static protocols.EmailUtilities.*;
@@ -125,9 +129,46 @@ public class Client {
     }
 
     private void viewEmail() {
-        System.out.print("Enter email ID to view: ");
-        String id = scanner.nextLine();
-        sendAndReceive(READ + DELIMITER + id);
+        String receivedEmailsResponse = sendAndReceive(LIST_RECEIVED, false);
+        String sentEmailsResponse = sendAndReceive(LIST_SENT, false);
+
+        List<Email> parsedEmails = Emails.parseEmailsResponse(receivedEmailsResponse);
+        parsedEmails.addAll(Emails.parseEmailsResponse(sentEmailsResponse));
+        // Print received
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0, parsedEmailsSize = parsedEmails.size(); i < parsedEmailsSize; i++) {
+            Email email = parsedEmails.get(i);
+            sb.append(i + 1).append(". ").append(email.getSubject()).append('\n');
+        }
+        sb.append("0. Cancel");
+
+        // Select email to read
+        int selection;
+        while (true) {
+            System.out.println(sb);
+            try {
+                selection = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Please select an email.");
+                continue;
+            } finally {
+                scanner.nextLine();
+            }
+            if (selection == 0) return;
+            if (selection > 0 && selection <= parsedEmails.size()) break;
+            System.out.println("Please select an email.");
+        }
+
+        String readEmailResponse = sendAndReceive(READ + DELIMITER + selection, false);
+        List<Email> readEmails = Emails.parseEmailsResponse(readEmailResponse);
+        if (readEmails.isEmpty()) {
+            System.out.println("Couldn't fetch the email");
+            return;
+        }
+        Email readEmail = readEmails.getFirst();
+        System.out.println("Subject: " + readEmail.getSubject());
+        System.out.println("Body:\n" + readEmail.getBody());
+        System.out.println();
     }
 
     private void listReceived() {
@@ -170,16 +211,20 @@ public class Client {
         sendAndReceive(LOGOUT);
     }
 
-    private String sendAndReceive(String message) {
+    private String sendAndReceive(String message, boolean printRawResponse) {
         network.send(message);
         String response = network.receive();
         if (response != null) {
-            System.out.println("Server: " + response);
+            if (printRawResponse) System.out.println("Server: " + response);
         } else {
             System.out.println("Server closed the connection.");
         }
 
         return response;
+    }
+
+    private String sendAndReceive(String message) {
+        return sendAndReceive(message, true);
     }
 
     public static void main(String[] args) {
