@@ -135,17 +135,17 @@ public class Client {
         List<Email> parsedEmails = Emails.parseEmailsResponse(receivedEmailsResponse);
         parsedEmails.addAll(Emails.parseEmailsResponse(sentEmailsResponse));
         // Print received
-        StringBuilder sb = new StringBuilder();
+        StringBuilder formattedEmails = new StringBuilder();
         for (int i = 0, parsedEmailsSize = parsedEmails.size(); i < parsedEmailsSize; i++) {
             Email email = parsedEmails.get(i);
-            sb.append(i + 1).append(". ").append(email.getSubject()).append('\n');
+            formattedEmails.append(i + 1).append(". ").append(email.getSubject()).append(" (").append(email.getSender()).append(")").append('\n');
         }
-        sb.append("0. Cancel");
+        formattedEmails.append("0. Cancel");
 
         // Select email to read
         int selection;
         while (true) {
-            System.out.println(sb);
+            System.out.println(formattedEmails);
             try {
                 selection = scanner.nextInt();
             } catch (InputMismatchException e) {
