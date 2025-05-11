@@ -5,6 +5,7 @@ import networking.TCPNetworkLayer;
 import utils.Emails;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -138,7 +139,12 @@ public class Client {
         StringBuilder formattedEmails = new StringBuilder();
         for (int i = 0, parsedEmailsSize = parsedEmails.size(); i < parsedEmailsSize; i++) {
             Email email = parsedEmails.get(i);
-            formattedEmails.append(i + 1).append(". ").append(email.getSubject()).append(" (").append(email.getSender()).append(")").append('\n');
+            formattedEmails
+                    .append(i + 1).append(". ")
+                    .append(email.getSubject())
+                    .append(" (").append(email.getSender()).append(") ")
+                    .append(email.getTimestamp().format(DateTimeFormatter.ofPattern(TIMESTAMP)))
+                    .append('\n');
         }
         formattedEmails.append("0. Cancel");
 
