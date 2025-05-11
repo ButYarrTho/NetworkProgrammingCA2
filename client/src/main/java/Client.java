@@ -125,7 +125,9 @@ public class Client {
     }
 
     private void viewEmail() {
-        throw new UnsupportedOperationException("Not implemented");
+        System.out.print("Enter email ID to view: ");
+        String id = scanner.nextLine();
+        sendAndReceive(READ + DELIMITER + id);
     }
 
     private void listReceived() {
@@ -137,11 +139,15 @@ public class Client {
     }
 
     private void searchReceived() {
-        throw new UnsupportedOperationException("Not implemented");
+        System.out.print("Enter keyword to search received: ");
+        String keyword = scanner.nextLine();
+        sendAndReceive(SEARCH_RECEIVED + DELIMITER + keyword);
     }
 
     private void searchSent() {
-        throw new UnsupportedOperationException("Not implemented");
+        System.out.print("Enter keyword to search sent: ");
+        String keyword = scanner.nextLine();
+        sendAndReceive(SEARCH_SENT + DELIMITER + keyword);
     }
 
     private void deleteEmail() {
